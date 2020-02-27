@@ -28,7 +28,7 @@ Sequelize 中有两种等效的方式定义 Model：
 
 
 
-### 使用 `sequelize.define`
+### 使用 sequelize.define
 
 ```javascript
 const { Sequelize, DataTypes } = require("sequelize");
@@ -49,7 +49,7 @@ const User = sequelize.define("User", { // Model 名称为 User，对应的表�
 
 
 
-### 从 Mode 类派生
+### 从 Model 类派生
 
 ```javascript
 const { Sequelize, DataTypes, Model } = require("sequelize");
