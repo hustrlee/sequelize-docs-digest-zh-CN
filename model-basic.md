@@ -59,19 +59,19 @@ class User extends Model {}
 
 User.init(
   {
-  	firstName: {
-    	type: DataTypes.STRING,
-    	allowNull: false
-  	},
-  	lastName: {
-    	type: DataTypes.STRING
-  	}
-	},
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    lastName: {
+      type: DataTypes.STRING
+    }
+  },
   {
-  	sequelize, // 需要将 Model - User 与数据库连接实例 sequelize 关联起来
-  	modelName: "User", // Model 的名称
-  	tableName: "Users" // 显式的指定关联的数据库表名称
-	}
+    sequelize, // 需要将 Model - User 与数据库连接实例 sequelize 关联起来
+    modelName: "User", // Model 的名称
+    tableName: "Users" // 显式的指定关联的数据库表名称
+  }
 );
 ```
 
@@ -93,14 +93,14 @@ User.init(
 const User = sequelize.define(
   "User", // Model名
   {
-  	firstName: {
-    	type: DataTypes.STRING,
-    	allowNull: false
-  	},
-  	lastName: {
-    	type: DataTypes.STRING
-  	}
-	},
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    lastName: {
+      type: DataTypes.STRING
+    }
+  },
   {
     freezeTableName: true // 数据表名 = Model名 = User
   }
@@ -115,14 +115,14 @@ const User = sequelize.define(
 const User = sequelize.define(
   "User", // Model名
   {
-  	firstName: {
-    	type: DataTypes.STRING,
-    	allowNull: false
-  	},
-  	lastName: {
-    	type: DataTypes.STRING
-  	}
-	},
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    lastName: {
+      type: DataTypes.STRING
+    }
+  },
   {
     tableName: "Employees" // 数据表名 = Employees
   }
@@ -236,8 +236,8 @@ const sequelize = new Sequelize("mysql://root:root@localhost/dbtest");
 
 class Foo extends Model {}
 Foo.init(
-	{
-  	flag: {
+  {
+    flag: {
       type: DataTypes.BOOLEAN, // 数据类型
       allowNull: false, // 是否允许为 NULL。true：允许；false：不允许。
       defaultValue: true, // 缺省值
@@ -269,9 +269,9 @@ Foo.init(
         key: 'id'
       }
     }
-	},
-	{
-  	sequelize,
+  },
+  {
+    sequelize,
     modelName: "Foo",
     
     // 既可以在 someUnique 字段定义中使用 unique: true 属性，也可以在 model 选项中，
@@ -280,7 +280,7 @@ Foo.init(
       {
       	unique: true,
       	fields: ["someUnique"]
-    	},
+      },
       {
         unique: true,
         fields: ["uniqueOne", "uniqueTwo"]
@@ -314,9 +314,9 @@ class User extends Model {
 
 User.init(
   {
-  	firstName: DataTypes.STRING,
-  	lastName: DataTypes.STRING
-	},
+    firstName: DataTypes.STRING,
+    lastName: DataTypes.STRING
+  },
   {
     sequelize,
     modelName: "User"
