@@ -49,9 +49,49 @@ await User.destroy({ truncate: true });
 
 ## 指定 SELECT 查询的属性
 
-> **注意：**官方文档的例子在 MySQL 5.7/MySQL 8 上并不能正确执行，因为 MySQL 5.7 以上版本的默认查询模式是：ONLY_FULL_GROUP_BY。这里，对这些例子进行了改写。
+本节的例子，基于以下数据库表：
+
+| id   | firstName | lastName | createdAt           | updatedAt           |
+| ---- | --------- | -------- | ------------------- | ------------------- |
+| 1    | Richard   | Public   | 2020-02-28 21:39:31 | 2020-02-28 21:39:31 |
+| 2    | Jane      | Doe      | 2020-02-28 21:39:31 | 2020-02-28 21:39:31 |
+
+> **注意：**官方文档的例子在 MySQL 5.7/MySQL 8 上并不能正确执行，因为 MySQL 5.7 以上版本的默认查询模式是：only_full_group_by。
 
 ```javascript
+// 只查询 id、firstName 两个字段
+// SELECT id, firstName FROM Users;
+users = User.findAll({
+  attributes: ["id", "firstName"]
+})；
 
+// 将 lastName 字段查询结果重命名为 familyName
+// SELECT firstName, lastName AS familyName FROM Users;
+users = User.findAll({
+  attributes: ["firstName", ["lastName", "familyName"]]
+});
+// users = [{ firstName: "Richard", familyName: "Public"}, ...]
+
+// 使用聚合函数示例。官方示例在 MySQL 5.7 以上版本不正确，不可以将非 GROUP BY 的字段和聚合函数一起使用
+// SELECT GROUP_CONCAT(firstName) AS concat, COUNT(id) AS total_user FROM Users;
+users = User.findAll({
+  attributes: [
+    [sequelize.fn("GROUP_CONCAT", sequelize.col("firstName")), "concat"],
+    [sequelize.fn("COUNT", sequelize.col("id")), "total_user"]
+  ]
+});
+// users = { concat: "Richard,Jane", total_user: 2 }
+// 同理：官方示例中的 include 示例会报错
+
+users = User.findAll({
+  attributes: {
+    exclude: ["createdAt", "updatedAt"] // 不显示 createdAt 和 updatedAt 两个字段
+  }
+})；
 ```
 
+
+
+## 使用 WHERE
+
+ 
