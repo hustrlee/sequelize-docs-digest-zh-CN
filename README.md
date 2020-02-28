@@ -20,6 +20,8 @@ Sequelize 的文档也完全重写了。得益于 Node 10 对 async/await 的全
 
 [Model 实例 (Model Instances)](./model-instances.md)
 
+[Model 基本 CRUD 操作 (Model Querying - Basic)](./model-querying-basic.md)
+
 
 
 ## 进阶
