@@ -94,4 +94,86 @@ users = User.findAll({
 
 ## 使用 WHERE
 
- 
+`where` 有很多运算符，可以从 `Op` 中以符号的方式来引用。
+
+ ### 基本使用方法
+
+```javascript
+// SELECT * FROM post WHERE authorId = 2 AND age IN (25, 26, 27) AND status = 'active';
+Post.findAll({
+  where: {
+    authorId: 2,
+    age: [25, 26, 27],
+    status: "active"
+  }
+});
+
+// 使用 Op 实现更复杂的逻辑
+// SELECT * FROM post WHERE authorId = 2 OR authorId = 3;
+const { Op } = require("sequelize");
+Post.findAll({
+  where: {
+    [Op.or]: [
+      { authorId: 2 },
+      { authorId: 3 }
+    ]
+  }
+});
+
+// 以上逻辑，也可以简写为：
+Post.findAll({
+  where: {
+    authorId: {
+      [Op.or]: [2, 3]
+    }
+  }
+});
+```
+
+### 运算符详解
+
+```javascript
+const { Op } = require("sequelize");
+Post.findAll({
+  where: {
+    [Op.and]: [{ a: 5 }, { b: 6 }],            // (a = 5) AND (b = 6)
+    [Op.or]: [{ a: 5 }, { b: 6 }],             // (a = 5) OR (b = 6)
+    someAttribute: {
+      // Basics
+      [Op.eq]: 3,                              // = 3
+      [Op.ne]: 20,                             // != 20
+      [Op.is]: null,                           // IS NULL
+      [Op.not]: true,                          // IS NOT TRUE
+      [Op.or]: [5, 6],                         // (someAttribute = 5) OR (someAttribute = 6)
+
+      // Number comparisons
+      [Op.gt]: 6,                              // > 6
+      [Op.gte]: 6,                             // >= 6
+      [Op.lt]: 10,                             // < 10
+      [Op.lte]: 10,                            // <= 10
+      [Op.between]: [6, 10],                   // BETWEEN 6 AND 10
+      [Op.notBetween]: [11, 15],               // NOT BETWEEN 11 AND 15
+
+      // Other operators
+
+      [Op.all]: sequelize.literal('SELECT 1'), // > ALL (SELECT 1)
+
+      [Op.in]: [1, 2],                         // IN [1, 2]
+      [Op.notIn]: [1, 2],                      // NOT IN [1, 2]
+
+      [Op.like]: '%hat',                       // LIKE '%hat'
+      [Op.notLike]: '%hat',                    // NOT LIKE '%hat'
+      [Op.startsWith]: 'hat',                  // LIKE 'hat%'
+      [Op.endsWith]: 'hat',                    // LIKE '%hat'
+      [Op.substring]: 'hat',                   // LIKE '%hat%'
+      [Op.regexp]: '^[h|a|t]',                 // REGEXP/~ '^[h|a|t]'
+      [Op.notRegexp]: '^[h|a|t]',              // NOT REGEXP/!~ '^[h|a|t]'
+    }
+  }
+});
+```
+
+### 逻辑组合
+
+运算符 `Op.and`、`Op.or`、`Op.not` 可以组成任意复杂的、嵌套的逻辑表达式。
+
