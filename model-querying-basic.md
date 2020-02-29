@@ -251,3 +251,140 @@ Project.findAll({
 });
 ```
 
+### 在查询条件中使用函数（不仅仅是字段）
+
+简单的例子：
+
+```javascript
+// SELECT * FROM Posts WHERE char_length("content") = 7;
+Post.findAll({
+  where: sequelize.where(sequelize.fn("char_length", sequelize.col("content")), 7)
+});
+```
+
+复杂的例子：
+
+```mysql
+SELECT * FROM Posts
+WHERE (
+  char_length("content") = 7
+  OR
+  content LIKE 'Hello%'
+  OR (
+    status = 'draft'
+    AND
+    char_length("content") > 10
+  )
+);
+```
+
+```javascript
+Post.findAll({
+  where: {
+    [Op.or]: [
+      sequelize.where(sequelize.fn("char_length", "content"), 7),
+      { content: { [Op.like]: "Hello%" } },
+      { 
+        [Op.and]: [
+          { status: "draft" },
+          sequelize.where(sequelize.fn("char_length", "content"), { [Op.gt]: 10 })
+        ]
+      }
+    ]
+  }
+});
+```
+
+
+
+## 批量插入
+
+Sequelize 使用 `Model.bulkCreate` 方法进行批量插入。
+
+```javascript
+// 插入多条记录
+const captains = await Captain.bulkCreate([
+  { name: "Jack Sparrow" },
+  { name: "Davy Jones" }
+]);
+```
+
+缺省的情况下，`create` 会根据校验选项，对插入的数据进行校验；而 `bulkCreate` 并不会进行校验。如果希望 `bulkCreate` 也进行数据校验，则需要置 `validate: true`。
+
+```javascript
+const Foo = sequelize.define("foo", {
+  bar: {
+    type: DataTypes.TEXT,
+    validate: {
+      len: [4, 6]
+    }
+  }
+});
+
+// 下面的语句将插入两条数据，不会发生错误
+await Foo.bulkCreate([
+  { name: "abc123" },
+  { name: "name too long" }
+]);
+
+// 下面的语句将抛出一个错误，两条记录都不会被插入
+await Foo.bulkCreate(
+  [
+    { name: "abc123" },
+    { name: "name too long" }
+  ],
+  { validate: true }
+);
+```
+
+
+
+## 排序和分组
+
+Sequelize 使用 `order` 和 `group` 选项来实现 `ORDER BY` 和 `GROUP BY`。
+
+```javascript
+Foo.findAll({
+  order: [
+    [ "name", "DESC" ],
+    [ "rank", "ASC"]
+  ],
+  group: [ "name", "rank" ]
+});
+
+```
+
+
+
+## 分页
+
+```javascript
+// 获取 10 行数据
+Project.findAll({ limit: 10 });
+
+// 跳过 8 条数据
+Project.findAll({ offset: 8 });
+
+// 每页 5 条数据，获取第 n 页数据
+Project.findAll({ offset: (n-1)*5, limit: 5 })
+```
+
+
+
+## 其它实用方法
+
+```javascript
+// id > 25 的数据行数
+await Foo.count({
+  where: {
+    id: {
+      [Op.gt]: 25
+    }
+  }
+});
+
+await Foo.max("age", { where: { age: { [Op.lt]: 20 } } }); // age < 10 中最大的 age 值
+await Foo.min("age", { where: { age: { [Op.gt]: 5 } } });  // age > 5 中最小的 age 值
+await Foo.sum("age", { where: { age: { [Op.gt]: 5 } } });  // age > 5 的所有 age 的和
+```
+
