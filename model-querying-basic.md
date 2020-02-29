@@ -177,3 +177,77 @@ Post.findAll({
 
 运算符 `Op.and`、`Op.or`、`Op.not` 可以组成任意复杂的、嵌套的逻辑表达式。
 
+#### Op.and 和 Op.or 的组合示例
+
+```mysql
+SELECT * FROM Foo WHERE
+	(`rand` < 1000 OR `rank` IS NULL) AND
+	(createdAt < [timestamp] AND createdAt > [timestamp]) AND
+	(title LIKE 'Boat%' OR description LIKE '%boot%');
+```
+
+- [timestamp] 是 js 代码计算出来的，而不是调用的 MySQL 函数。通常，服务器和客户端的时钟并不同步，在产品级代码中，不应这么用。这里只是为了简化演示。
+
+> **注意！**官方示例并不符合 node 的标准语法，有错误！
+
+对应的 Sequelize 代码：
+
+```javascript
+Foo.findAll({
+  where: {
+    rand: {
+      [Op.or]: {
+        [Op.lt]: 1000,
+        [Op.eq]: null
+      }
+    },
+    createAt: {
+      [Op.and]: {
+        [Op.lt]: new Date(),
+        [Op.gt]: new Date(new Date() - 34 * 60 * 60 * 1000) // 1 天之前
+      }
+    },
+    [Op.or]: {
+      title: {
+        [Op.like]: "Boat%"
+      },
+      description: {
+        [Op.like]: "%boat%"
+      }
+    }
+  }
+});
+```
+
+#### Op.not 示例
+
+```mysql
+SELECT * FROM `Projects`
+WHERE (
+  name = "Some Project" 
+  AND NOT (
+    id IN (1, 2, 3) OR description LIKE "Hello%"
+  )
+);
+```
+
+> **注意！**官方示例并不符合 node 的标准语法；且有逻辑错误，不能对应 SQL 语句。
+
+对应的 Sequelize 代码：
+
+```javascript
+Project.findAll({
+  where: {
+    name: "Some Project",
+    [Op.not]: {
+      [Op.or]: {
+        id: [1, 2, 3],
+        description: {
+          [Op.like]: "Hello%"
+        }
+      }
+    }
+  }
+});
+```
+
