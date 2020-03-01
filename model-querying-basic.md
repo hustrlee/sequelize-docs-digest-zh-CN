@@ -349,7 +349,7 @@ Foo.findAll({
     [ "name", "DESC" ],
     [ "rank", "ASC"]
   ],
-  group: [ "name", "rank" ]
+  group: "rank"
 });
 
 ```
