@@ -30,6 +30,8 @@ Sequelize 的文档也完全重写了。得益于 Node 10 对 async/await 的全
 
 [原生 SQL 查询 - Raw Queries](./raw-queries.md)
 
+[关联 - Associations](./associations.md)
+
 
 
 ## 进阶
