@@ -34,7 +34,7 @@ Sequelize 的文档也完全重写了。得益于 Node 10 对 async/await 的全
 
 
 
-## 进阶
+## 关联的进阶讨论
 
 ## 其它
 
