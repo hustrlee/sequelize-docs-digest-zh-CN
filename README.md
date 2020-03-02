@@ -28,6 +28,8 @@ Sequelize 的文档也完全重写了。得益于 Node 10 对 async/await 的全
 
 [校验和约束 - Validations & Constraints](./validations-constraints.md)
 
+[原生 SQL 查询 - Raw Queries](./raw-queries.md)
+
 
 
 ## 进阶
