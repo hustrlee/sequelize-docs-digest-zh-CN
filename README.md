@@ -32,9 +32,17 @@ Sequelize 的文档也完全重写了。得益于 Node 10 对 async/await 的全
 
 [关联 - Associations](./associations.md)
 
+[Paranoid - Paranoid](./paranoid.md)
 
 
-## 关联的进阶讨论
+
+## 关联的进一步讨论
+
+[饥渴加载 - Eager Loading](./eager-loading.md)
+
+
 
 ## 其它
+
+[事务 - Transactions](./transactions.md)
 
